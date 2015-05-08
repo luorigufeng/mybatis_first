@@ -29,4 +29,24 @@
   <delete id="deleteUser" parameterType="int">
     delete from `user` where id = #{id}
   </delete>
+  
+  <!-- mule table -->
+  <resultMap id="resultUserArticleList" type="Article">
+    <id property="id" column="aid"/> <!-- should use alias -->
+    <result property="title" column="title"/>
+    <result property="content" column="content"/>
+    
+<!--     <association property="user" javaType="User">
+      <id property="id" column="id"/>
+      <result property="userName" column="userName"/>
+      <result property="userAddress" column="userAddress"/>
+    </association> -->
+    <association property="user" javaType="User" resultMap="resultListUser"/>
+  </resultMap>
+  
+  <select id="getUserArticles" parameterType="User" resultMap="resultUserArticleList">
+    select user.id,user.userName,user.userAddress,article.id aid,article.title,article.content
+    from user,article
+    where user.id = article.userid and user.id=#{id}
+  </select>
 </mapper>

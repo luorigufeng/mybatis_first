@@ -13,6 +13,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.*;
 
 import com.zxj.mybatis.mapper.UserMapper;
+import com.zxj.mybatis.model.Article;
 import com.zxj.mybatis.model.User;
 
 public class UserTest {
@@ -55,7 +56,7 @@ public class UserTest {
 		try {
 			UserMapper userMapper = session.getMapper(UserMapper.class);
 			List<User> userList = userMapper.selectUsers("%");
-			assertThat(userList.size(), is(1));
+			assertThat(userList.size(), is(2));
 		} finally {
 			this.session.close();
 		}
@@ -71,7 +72,7 @@ public class UserTest {
 			userMapper.addUser(user);
 
 			List<User> userList = userMapper.selectUsers("%");
-			assertThat(userList.size(), is(2));
+			assertThat(userList.size(), is(3));
 			
 //			this.session.commit();
 		} finally {
@@ -95,7 +96,7 @@ public class UserTest {
 			this.session.close();
 		}
 	}
-	
+	@Test
 	public void testDeleteUser() {
 		try {
 			UserMapper userMapper = this.session.getMapper(UserMapper.class);
@@ -104,6 +105,31 @@ public class UserTest {
 			User user = userMapper.selectUserByID(1);
 			Assert.assertNull(user);
 //			this.session.commit();
+		} finally {
+			this.session.close();
+		}
+	}
+
+	@Test
+	public void testGetUserArticles() {
+		try {
+			UserMapper userMapper = this.session.getMapper(UserMapper.class);
+			User user = new User();
+			user.setId(1);
+			List<Article> ariticlesList = userMapper.getUserArticles(user);
+			String format="%8s|%16s｜%16s｜%16s｜%16s｜%8s|%8s";
+			System.out.println(String.format(format, "Id","Title","Content","UserName","UserAddress","UserAge","UserId"));
+			for (Article article : ariticlesList) {
+				System.out.println(String.format(format,
+						article.getId(),
+						article.getTitle(),
+						article.getContent(),
+						article.getUser().getUserName(),
+						article.getUser().getUserAddress(),
+						article.getUser().getUserAge(),
+						article.getUser().getId()));
+			}
+			assertThat(ariticlesList.size(), is(4));
 		} finally {
 			this.session.close();
 		}

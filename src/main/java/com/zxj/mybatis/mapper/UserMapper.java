@@ -2,6 +2,7 @@ package com.zxj.mybatis.mapper;
 
 import java.util.List;
 
+import com.zxj.mybatis.model.Article;
 import com.zxj.mybatis.model.User;
 
 public interface UserMapper {
@@ -14,4 +15,6 @@ public interface UserMapper {
 	public void updateUser(User user);
 
 	public void deleteUser(int id);
+	
+	public List<Article> getUserArticles(User user);
 }
